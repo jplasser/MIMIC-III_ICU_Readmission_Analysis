@@ -128,44 +128,53 @@ def column_sum(M):
 embeddings, word_indices = get_embeddings(corpus='claims_codes_hs', dim=300)
 
 # Build readers, discretizers, normalizers
-train_reader = ReadmissionReader(dataset_dir='/Users/jeffrey0925/MIMIC-III-clean/readmission_cv2/data/',
-                                         listfile='/Users/jeffrey0925/MIMIC-III-clean/readmission_cv2/0_train_listfile801010.csv')
+train_reader = ReadmissionReader(dataset_dir='/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
+                                         listfile='/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_train_listfile801010.csv')
 
-val_reader = ReadmissionReader(dataset_dir='/Users/jeffrey0925/MIMIC-III-clean/readmission_cv2/data/',
-                                       listfile='/Users/jeffrey0925/MIMIC-III-clean/readmission_cv2/0_val_listfile801010.csv')
+val_reader = ReadmissionReader(dataset_dir='/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
+                                       listfile='/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_val_listfile801010.csv')
 
-test_reader = ReadmissionReader(dataset_dir='/Users/jeffrey0925/MIMIC-III-clean/readmission_cv2/data/',
-                                    listfile='/Users/jeffrey0925/MIMIC-III-clean/readmission_cv2/0_test_listfile801010.csv')
+test_reader = ReadmissionReader(dataset_dir='/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
+                                    listfile='/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_test_listfile801010.csv')
 
-
+print("before discretize...")
 discretizer = Discretizer(timestep=float(1.0),
                           store_masks=True,
                           imput_strategy='previous',
                           start_time='zero')
-
-N=train_reader.get_number_of_examples()
+print("before getnumber of examples...")
+N = train_reader.get_number_of_examples()
+print("after getnumber of examples... N=", N)
+print("before readchunk...")
 ret = common_utils.read_chunk(train_reader, N)
+print("after readchunk...")
 data = ret["X"]
 ts = ret["t"]
 train_y = ret["y"]
 train_names = ret["name"]
-diseases_list=get_diseases(train_names, '/Users/jeffrey0925/MIMIC-III-clean/data/')
+print("before get diseases...")
+diseases_list=get_diseases(train_names, '/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
+print("after get diseases...")
+print("before disease embeddings...")
 diseases_embedding=disease_embedding(embeddings, word_indices,diseases_list)
+print("after disease embeddings...")
 
-d, discretizer_header, begin_pos, end_pos = discretizer.transform_reg(data[0])
+headers_from_csv = "Hours,Alanine aminotransferase,Albumin,Alkaline phosphate,Anion gap,Asparate aminotransferase,Basophils,Bicarbonate,Bilirubin,Blood culture,Blood urea nitrogen,Calcium,Calcium ionized,Capillary refill rate,Chloride,Cholesterol,Creatinine,Diastolic blood pressure,Eosinophils,Fraction inspired oxygen,Glascow coma scale eye opening,Glascow coma scale motor response,Glascow coma scale total,Glascow coma scale verbal response,Glucose,Heart Rate,Height,Hematocrit,Hemoglobin,Lactate,Lactate dehydrogenase,Lactic acid,Lymphocytes,Magnesium,Mean blood pressure,Mean corpuscular hemoglobin,Mean corpuscular hemoglobin concentration,Mean corpuscular volume,Monocytes,Neutrophils,Oxygen saturation,Partial pressure of carbon dioxide,Partial pressure of oxygen,Partial thromboplastin time,Peak inspiratory pressure,Phosphate,Platelets,Positive end-expiratory pressure,Potassium,Prothrombin time,Pupillary response left,Pupillary response right,Pupillary size left,Pupillary size right,Red blood cell count,Respiratory rate,Sodium,Systolic blood pressure,Temperature,Troponin-I,Troponin-T,Urine output,Weight,White blood cell count,pH"
+header_list_from_csv = headers_from_csv.split(',')
+d, discretizer_header, begin_pos, end_pos = discretizer.transform_reg(data[0], header=header_list_from_csv)
 
 discretizer_header=discretizer_header.split(',')
-
+print("after discretize...")
 
 
 cont_channels = [i for (i, x) in enumerate(discretizer_header) if x.find("->") == -1]
 
 
-da= [discretizer.transform_end_t_hours_reg(X, los=t)[1] for (X, t) in zip(data, ts)]
+da= [discretizer.transform_end_t_hours_reg(X, header=header_list_from_csv, los=t)[1] for (X, t) in zip(data, ts)]
 mask=[column_sum(x) for x in da]
 
 #train_set=[]
-d= [discretizer.transform_end_t_hours_reg(X, los=t)[0] for (X, t) in zip(data, ts)]
+d= [discretizer.transform_end_t_hours_reg(X, header=header_list_from_csv, los=t)[0] for (X, t) in zip(data, ts)]
 
 idx_features_train= [logit(X,cont_channels,begin_pos, end_pos)[0] for X in d]
 features_train = [logit(X,cont_channels,begin_pos, end_pos)[1] for X in d]
@@ -232,7 +241,7 @@ ts_val = ret_val["t"]
 val_y= ret_val["y"]
 val_names = ret_val["name"]
 
-diseases_list_val=get_diseases(val_names, '/Users/jeffrey0925/MIMIC-III-clean/data/')
+diseases_list_val=get_diseases(val_names, '/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
 diseases_embedding_val=disease_embedding(embeddings, word_indices,diseases_list_val)
 
 
@@ -264,7 +273,7 @@ ts_test = ret_test["t"]
 test_y= ret_test["y"]
 test_names = ret_test["name"]
 
-diseases_list_test = get_diseases(test_names, '/Users/jeffrey0925/MIMIC-III-clean/data/')
+diseases_list_test = get_diseases(test_names, '/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
 diseases_embedding_test=disease_embedding(embeddings, word_indices,diseases_list_test)
 
 #----------
@@ -454,6 +463,6 @@ plt.legend(loc="lower right")
 
 
 
-fig.savefig('/Users/jeffrey0925/Downloads/mimic3-benchmarks-master/mimic3models/readmission3/logistic_cv_0/ROC0.png')
+fig.savefig('/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic3models/readmission_baselines/logistic_cv_0/ROC0.png')
 
 plt.show()

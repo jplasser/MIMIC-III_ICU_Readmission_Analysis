@@ -2,6 +2,9 @@ import os
 import numpy as np
 import random
 
+# changejrp
+from io import StringIO
+import csv
 
 class Reader(object):
     def __init__(self, dataset_dir, listfile=None):
@@ -171,7 +174,11 @@ class ReadmissionReader(Reader):
             header = tsfile.readline().strip().split(',')
             assert header[0] == "Hours"
             for line in tsfile:
-                mas = line.strip().split(',')
+                ##mas = line.strip().split(',')
+                s = StringIO(line.strip())
+                mas = list(csv.reader(s, delimiter=',', quotechar='"'))[0] # skipinitialspace=True,
+                if len(mas) != 65:
+                    print("mas shape", len(mas), " in line ", line, " in file ", ts_filename, " mas= ", mas)
                 ret.append(np.array(mas))
         return (np.stack(ret), header)
 

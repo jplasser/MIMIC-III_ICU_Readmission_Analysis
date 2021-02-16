@@ -56,7 +56,7 @@ def extract_diagnosis_labels(diagnoses):
         if l not in labels:
             labels[l] = 0
     labels = labels[diagnosis_labels]
-    return labels.rename(dict(zip(diagnosis_labels, [ 'Diagnosis ' + d for d in diagnosis_labels])), axis=1)
+    return labels.rename(columns=dict(zip(diagnosis_labels, [ 'Diagnosis ' + d for d in diagnosis_labels]))) # changejrp, axis=1)
 
 def add_hcup_ccs_2015_groups(diagnoses, definitions):
     def_map = {}
@@ -90,7 +90,7 @@ def read_itemid_to_variable_map(fn, variable_column='LEVEL2'):
     var_map.ITEMID = var_map.ITEMID.astype(int)
     var_map = var_map[[variable_column, 'ITEMID', 'MIMIC LABEL']].set_index('ITEMID')
     #print (var_map)
-    return var_map.rename({variable_column: 'VARIABLE', 'MIMIC LABEL': 'MIMIC_LABEL'}, axis=1)
+    return var_map.rename(columns={variable_column: 'VARIABLE', 'MIMIC LABEL': 'MIMIC_LABEL'}) # changejrp, axis=1)
 
 def map_itemids_to_variables(events, var_map):
     return events.merge(var_map, left_on='ITEMID', right_index=True)

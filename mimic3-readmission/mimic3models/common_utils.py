@@ -4,6 +4,7 @@ import os
 def read_chunk(reader, chunk_size):
     data = {}
     for i in range(chunk_size):
+        print(i, " of ", chunk_size)
         ret = reader.read_next()
         for k, v in ret.items():
             if k not in data:
