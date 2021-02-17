@@ -4,15 +4,20 @@ This is the source code for the paper 'Analysis and Prediction of Unplanned Inte
 ## Requirements
 
 1. You need to first get access to MIMIC-III data by  yourself from https://mimic.physionet.org/, and save all of the csv files into a directory.
-We do not provide the MIMIC-III data itself. 
+We do not provide the MIMIC-III data itself.
 
 2. Install the following packages:
 
-- numpy
-- pandas
-- Keras
-- scikit_learn
+For those who use Anaconda it is probably the best to get everything running (at least the data preprocessing) with the following requirements and by using the (almost) original source code to preprocess the MIMIC-III data set.
 
+- Python 3.6.5 to 3.6.12 (3.6.12)
+- numpy 1.12.1 to 1.14.0 (1.12.1)
+- pandas <=0.19.2 (0.19.2)
+- Keras 2.1.6 to 2.3.1 (2.3.1)
+- scikit-learn 0.19.1 to 0.23.2 (0.21.2)
+- frozendict 1.2 (1.2)
+
+	conda env create -f environment_data.yml
 
 3. Download pre-trained ICD 9 Embeddings
 In this study, our models were trained on a lower dimension embedding of ICD9. We apply the pretrained 300-dim embedding for each ICD9 code. You can download one of the following disease embedding:
