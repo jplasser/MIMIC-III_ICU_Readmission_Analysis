@@ -17,7 +17,8 @@ For those who use Anaconda it is probably the best to get everything running (at
 - scikit-learn 0.19.1 to 0.23.2 (0.21.2)
 - frozendict 1.2 (1.2)
 
-	conda env create -f environment_data.yml
+
+       conda env create -f environment_data.yml
 
 3. Download pre-trained ICD 9 Embeddings
 In this study, our models were trained on a lower dimension embedding of ICD9. We apply the pretrained 300-dim embedding for each ICD9 code. You can download one of the following disease embedding:
@@ -28,7 +29,7 @@ Please download the `claims_codes_hs_300.txt.gz`, extract it, and put the `claim
 ## Preprocessing
 1. Add the path to the `PYTHONPATH`.
 
-    export PYTHONPATH=$PYTHONPATH:[PATH TO THIS REPOSITORY]
+       export PYTHONPATH=$PYTHONPATH:[PATH TO THIS REPOSITORY]
 
 
 2. For each patient, `SUBJECT_ID`, we generate the `stays.csv`, `events.csv`, `diagnoses.csv`,`transfers.csv`,`procedures.csv`and `prescriptions.csv`. We place them into the directory `data/[SUBJECT_ID/`. In this study, we only use `stays.csv`, `events.csv`, and `diagnoses.csv`. The rest of the file will be used in the future work.
