@@ -779,9 +779,9 @@ class Discretizer():
             for j in range(1, len(row)):
                 if (row[j] == ""):
                     continue
-                channel = header[j]
                 # changejrp if the header is not applicable to the data set, then do nothing
                 try:
+                    channel = header[j]
                     channel_id = self._channel_to_id[channel]
 
                     total_data += 1
@@ -920,8 +920,8 @@ class Discretizer():
             for j in range(1, len(row)):
                 if (row[j] == ""):
                     continue
-                channel = header[j]
                 try:
+                    channel = header[j]
                     channel_id = self._channel_to_id[channel]
 
                     total_data += 1
