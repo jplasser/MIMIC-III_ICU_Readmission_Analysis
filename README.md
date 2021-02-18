@@ -17,9 +17,19 @@ For those who use Anaconda it is probably the best to get everything running (at
 - scikit-learn 0.19.1 to 0.23.2 (0.21.2)
 - frozendict 1.2 (1.2)
 
-
        conda env create -f environment_data.yml
 
+To run the training and validation of the Keras models the following environment file will suffice:
+
+- Python 3.6.5 to 3.6.12 (3.6.12)
+- numpy 1.12.1 to 1.14.0 (1.12.1)
+- pandas <=0.19.2 (0.19.2)
+- Keras 2.1.2 (2.1.2) with Theano (1.0.5) backend
+- scikit-learn 0.19.1 to 0.23.2 (0.21.2)
+- frozendict 1.2 (1.2)
+
+       conda env create -f environment_keras.yml
+       
 3. Download pre-trained ICD 9 Embeddings
 In this study, our models were trained on a lower dimension embedding of ICD9. We apply the pretrained 300-dim embedding for each ICD9 code. You can download one of the following disease embedding:
 - [claims_codes_hs_300.txt] (https://github.com/clinicalml/embeddings) : 300 dimensional ICD_9 embeddings
