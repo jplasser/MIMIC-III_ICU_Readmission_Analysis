@@ -23,7 +23,7 @@ For those who use Anaconda it is probably the best to get everything running (at
 3. Download pre-trained ICD 9 Embeddings
 In this study, our models were trained on a lower dimension embedding of ICD9. We apply the pretrained 300-dim embedding for each ICD9 code. You can download one of the following disease embedding:
 - [claims_codes_hs_300.txt] (https://github.com/clinicalml/embeddings) : 300 dimensional ICD_9 embeddings
-Please download the `claims_codes_hs_300.txt.gz`, extract it, and put the `claims_codes_hs_300.txt` into `/embeddings` folder.
+Please download the `claims_codes_hs_300.txt.gz`, extract it, and put it __renamed__ as `claims_codes_hs.300d.txt` into `/embeddings` folder.
 
 
 ## Preprocessing
