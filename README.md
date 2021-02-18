@@ -69,7 +69,10 @@ In this section, we use LSTM and LSTM_CNN as examples. you may want to different
 
        cd /mimic3models/readmission_baselines/logistic_cv_0
        python svm_s_p.py
-	
+       
+Results:
+![AUROC Plot](/mimic3-readmission/mimic3models/readmission_baselines/logistic_cv_0/ROC0.png)
+
 2. LSTM F48-h CE + ICD9. In this step, we use the first 48 hours chart events after admitting to IUC to predict readmission.
 
        cd /mimic3models/readmission_f48/
