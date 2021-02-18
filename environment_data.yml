@@ -168,4 +168,3 @@ dependencies:
   - zeromq=4.3.4=h9c3ff4c_0
   - zipp=3.4.0=py_0
   - zlib=1.2.11=h516909a_1010
-prefix: /home/lrcuplj/anaconda3/envs/ICU_Readmission_Analysis_Data_Setup
