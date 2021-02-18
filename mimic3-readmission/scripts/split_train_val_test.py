@@ -5,13 +5,13 @@ from sklearn.model_selection import KFold
 header='stay,period_length,y_true'
 
 patients = set()
-with open("/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/listfile.csv", "r") as valset_file:
+with open("/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/listfile.csv", "r") as valset_file:
     for line in valset_file:
         x= line.split(',')
         z=x[0].split('_')
         patients.add(z[0])
 patients=list(patients)
-with open("/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/listfile.csv", "r") as listfile:
+with open("/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/listfile.csv", "r") as listfile:
     lines = listfile.readlines()
 
 k_fold =KFold(n_splits=10,shuffle=True)
@@ -40,17 +40,17 @@ for id, cv in enumerate(cvs):
     print(len(train_lines) , len(val_lines) ,len(test_lines),len(lines))
     #assert len(train_lines) + len(val_lines) + len(test_lines)== len(lines)
 
-    with open("/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/"+str(id)+"_train_listfile801010.csv" , "w") as train_listfile:
+    with open("/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/"+str(id)+"_train_listfile801010.csv" , "w") as train_listfile:
         train_listfile.write(header)
         for line in train_lines:
             train_listfile.write(line)
 
-    with open("/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/"+str(id)+"_val_listfile801010.csv", "w") as val_listfile:
+    with open("/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/"+str(id)+"_val_listfile801010.csv", "w") as val_listfile:
         val_listfile.write(header)
         for line in val_lines:
             val_listfile.write(line)
 
-    with open("/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/"+str(id)+"_test_listfile801010.csv" , "w") as test_listfile:
+    with open("/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/"+str(id)+"_test_listfile801010.csv" , "w") as test_listfile:
         test_listfile.write(header)
         for line in test_lines:
             test_listfile.write(line)
