@@ -128,14 +128,14 @@ def column_sum(M):
 embeddings, word_indices = get_embeddings(corpus='claims_codes_hs', dim=300)
 
 # Build readers, discretizers, normalizers
-train_reader = ReadmissionReader(dataset_dir='/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
-                                         listfile='/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_train_listfile801010.csv')
+train_reader = ReadmissionReader(dataset_dir='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
+                                         listfile='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_train_listfile801010.csv')
 
-val_reader = ReadmissionReader(dataset_dir='/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
-                                       listfile='/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_val_listfile801010.csv')
+val_reader = ReadmissionReader(dataset_dir='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
+                                       listfile='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_val_listfile801010.csv')
 
-test_reader = ReadmissionReader(dataset_dir='/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
-                                    listfile='/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_test_listfile801010.csv')
+test_reader = ReadmissionReader(dataset_dir='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
+                                    listfile='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_test_listfile801010.csv')
 
 print("before discretize...")
 discretizer = Discretizer(timestep=float(1.0),
@@ -153,7 +153,7 @@ ts = ret["t"]
 train_y = ret["y"]
 train_names = ret["name"]
 print("before get diseases...")
-diseases_list=get_diseases(train_names, '/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
+diseases_list=get_diseases(train_names, '/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
 print("after get diseases...")
 print("before disease embeddings...")
 diseases_embedding=disease_embedding(embeddings, word_indices,diseases_list)
@@ -241,16 +241,16 @@ ts_val = ret_val["t"]
 val_y= ret_val["y"]
 val_names = ret_val["name"]
 
-diseases_list_val=get_diseases(val_names, '/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
+diseases_list_val=get_diseases(val_names, '/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
 diseases_embedding_val=disease_embedding(embeddings, word_indices,diseases_list_val)
 
 
 #----------
-da_val= [discretizer.transform_end_t_hours_reg(X, los=t)[1] for (X, t) in zip(data_val, ts_val)]
+da_val= [discretizer.transform_end_t_hours_reg(X, header=header_list_from_csv,los=t)[1] for (X, t) in zip(data_val, ts_val)]
 mask_val=[column_sum(x) for x in da_val]
 
 #train_set=[]
-d_val= [discretizer.transform_end_t_hours_reg(X, los=t)[0] for (X, t) in zip(data_val, ts_val)]
+d_val= [discretizer.transform_end_t_hours_reg(X, header=header_list_from_csv, los=t)[0] for (X, t) in zip(data_val, ts_val)]
 
 #---------
 #val_set=[]
@@ -273,15 +273,15 @@ ts_test = ret_test["t"]
 test_y= ret_test["y"]
 test_names = ret_test["name"]
 
-diseases_list_test = get_diseases(test_names, '/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
+diseases_list_test = get_diseases(test_names, '/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
 diseases_embedding_test=disease_embedding(embeddings, word_indices,diseases_list_test)
 
 #----------
-da_test= [discretizer.transform_end_t_hours_reg(X, los=t)[1] for (X, t) in zip(data_test, ts_test)]
+da_test= [discretizer.transform_end_t_hours_reg(X, header=header_list_from_csv, los=t)[1] for (X, t) in zip(data_test, ts_test)]
 mask_test=[column_sum(x) for x in da_test]
 
 #train_set=[]
-d_test= [discretizer.transform_end_t_hours_reg(X, los=t)[0] for (X, t) in zip(data_test, ts_test)]
+d_test= [discretizer.transform_end_t_hours_reg(X, header=header_list_from_csv, los=t)[0] for (X, t) in zip(data_test, ts_test)]
 #----------
 
 #data_test=[]
@@ -463,6 +463,6 @@ plt.legend(loc="lower right")
 
 
 
-fig.savefig('/home/lrcuplj/Documents/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic3models/readmission_baselines/logistic_cv_0/ROC0.png')
+fig.savefig('/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic3models/readmission_baselines/logistic_cv_0/ROC0.png')
 
 plt.show()
