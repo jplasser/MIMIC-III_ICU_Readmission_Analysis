@@ -4,8 +4,8 @@ from keras.models import Model
 from keras.layers import Input, Dense, LSTM, Dropout, Convolution1D, MaxPooling1D,Flatten
 from keras.layers.wrappers import Bidirectional
 
-from keras.engine import merge
-
+#from keras.engine import merge
+from keras.layers import merge
 
 class Network(Model):
     
