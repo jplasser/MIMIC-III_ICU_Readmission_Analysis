@@ -67,11 +67,11 @@ print (args)
 target_repl = (args.target_repl_coef > 0.0 and args.mode == 'train')
 embeddings, word_indices = get_embeddings(corpus='claims_codes_hs', dim=300)
 
-train_reader = ReadmissionReader(dataset_dir='/mnt/MIMIC-III-clean/readmission_cv2/data/',
-                                         listfile='/mnt/MIMIC-III-clean/readmission_cv2/0_train_listfile801010.csv')
+train_reader = ReadmissionReader(dataset_dir='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
+                                         listfile='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_train_listfile801010.csv')
 
-val_reader = ReadmissionReader(dataset_dir='/mnt/MIMIC-III-clean/readmission_cv2/data/',
-                                       listfile='/mnt/MIMIC-III-clean/readmission_cv2/0_val_listfile801010.csv')
+val_reader = ReadmissionReader(dataset_dir='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
+                                       listfile='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_val_listfile801010.csv')
 
 discretizer = Discretizer(timestep=float(args.timestep),
                           store_masks=True,
@@ -84,15 +84,17 @@ data = ret["X"]
 ts = ret["t"]
 labels = ret["y"]
 names = ret["name"]
-diseases_list=get_diseases(names, '/mnt/MIMIC-III-clean/data/')
+diseases_list=get_diseases(names, '/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
 diseases_embedding=disease_embedding(embeddings, word_indices,diseases_list)
 
+headers_from_csv = "Hours,Alanine aminotransferase,Albumin,Alkaline phosphate,Anion gap,Asparate aminotransferase,Basophils,Bicarbonate,Bilirubin,Blood culture,Blood urea nitrogen,Calcium,Calcium ionized,Capillary refill rate,Chloride,Cholesterol,Creatinine,Diastolic blood pressure,Eosinophils,Fraction inspired oxygen,Glascow coma scale eye opening,Glascow coma scale motor response,Glascow coma scale total,Glascow coma scale verbal response,Glucose,Heart Rate,Height,Hematocrit,Hemoglobin,Lactate,Lactate dehydrogenase,Lactic acid,Lymphocytes,Magnesium,Mean blood pressure,Mean corpuscular hemoglobin,Mean corpuscular hemoglobin concentration,Mean corpuscular volume,Monocytes,Neutrophils,Oxygen saturation,Partial pressure of carbon dioxide,Partial pressure of oxygen,Partial thromboplastin time,Peak inspiratory pressure,Phosphate,Platelets,Positive end-expiratory pressure,Potassium,Prothrombin time,Pupillary response left,Pupillary response right,Pupillary size left,Pupillary size right,Red blood cell count,Respiratory rate,Sodium,Systolic blood pressure,Temperature,Troponin-I,Troponin-T,Urine output,Weight,White blood cell count,pH"
+header_list_from_csv = headers_from_csv.split(',')
 
-discretizer_header = discretizer.transform(ret["X"][0])[1].split(',')
+discretizer_header = discretizer.transform(ret["X"][0], header=header_list_from_csv)[1].split(',')
 cont_channels = [i for (i, x) in enumerate(discretizer_header) if x.find("->") == -1]
 normalizer = Normalizer(fields=cont_channels)  # choose here onlycont vs all
 
-data = [discretizer.transform_first_t_hours(X, end=t)[0] for (X, t) in zip(data, ts)]
+data = [discretizer.transform_first_t_hours(X, header=header_list_from_csv, end=t)[0] for (X, t) in zip(data, ts)]
 
 
 [normalizer._feed_data(x=X) for X in data]
@@ -155,7 +157,7 @@ N1=val_reader.get_number_of_examples()
 ret1 = common_utils.read_chunk(val_reader, N1)
 
 names1 = ret1["name"]
-diseases_list1=get_diseases(names1, '/mnt/MIMIC-III-clean/data/')
+diseases_list1=get_diseases(names1, '/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
 
 diseases_embedding1=disease_embedding(embeddings, word_indices,diseases_list1)
 val_raw = utils.load_data(val_reader, discretizer, normalizer, diseases_embedding1)
@@ -215,14 +217,14 @@ elif args.mode == 'test':
     del train_raw
     del val_raw
 
-    test_reader = ReadmissionReader(dataset_dir='/mnt/MIMIC-III-clean/readmission_cv2/data/',
-                                    listfile='/mnt/MIMIC-III-clean/readmission_cv2/0_test_listfile801010.csv')
+    test_reader = ReadmissionReader(dataset_dir='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
+                                    listfile='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_test_listfile801010.csv')
 
     N = test_reader.get_number_of_examples()
     re = common_utils.read_chunk(test_reader, N)
 
     names = re["name"]
-    diseases_list = get_diseases(names, '/mnt/MIMIC-III-clean/data/')
+    diseases_list = get_diseases(names, '/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
     diseases_embedding = disease_embedding(embeddings, word_indices, diseases_list)
 
     ret = utils.load_data(test_reader, discretizer, normalizer, diseases_embedding,return_names=True)
