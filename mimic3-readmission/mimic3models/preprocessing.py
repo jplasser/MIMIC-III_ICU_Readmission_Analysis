@@ -209,15 +209,18 @@ class Discretizer():
             for j in range(1, len(row)):
                 if (row[j] == ""):
                     continue
-                channel = header[j]
-                channel_id = self._channel_to_id[channel]
+                try:
+                    channel = header[j]
+                    channel_id = self._channel_to_id[channel]
 
-                total_data += 1
-                if (mask[bin_id][channel_id] == 1):
-                    unused_data += 1
-                mask[bin_id][channel_id] = 1
-                write(data, bin_id, channel, row[j], begin_pos)
-                original_value[bin_id][channel_id] = row[j]
+                    total_data += 1
+                    if (mask[bin_id][channel_id] == 1):
+                        unused_data += 1
+                    mask[bin_id][channel_id] = 1
+                    write(data, bin_id, channel, row[j], begin_pos)
+                    original_value[bin_id][channel_id] = row[j]
+                except:
+                    pass
         
         # impute missing values
 
@@ -355,15 +358,18 @@ class Discretizer():
             for j in range(1, len(row)):
                 if (row[j] == ""):
                     continue
-                channel = header[j]
-                channel_id = self._channel_to_id[channel]
+                try:
+                    channel = header[j]
+                    channel_id = self._channel_to_id[channel]
 
-                total_data += 1
-                if (mask[bin_id][channel_id] == 1):
-                    unused_data += 1
-                mask[bin_id][channel_id] = 1
-                write(data, bin_id, channel, row[j], begin_pos)
-                original_value[bin_id][channel_id] = row[j]
+                    total_data += 1
+                    if (mask[bin_id][channel_id] == 1):
+                        unused_data += 1
+                    mask[bin_id][channel_id] = 1
+                    write(data, bin_id, channel, row[j], begin_pos)
+                    original_value[bin_id][channel_id] = row[j]
+                except:
+                    pass
 
         # impute missing values
 
@@ -501,15 +507,18 @@ class Discretizer():
             for j in range(1, len(row)):
                 if (row[j] == ""):
                     continue
-                channel = header[j]
-                channel_id = self._channel_to_id[channel]
+                try:
+                    channel = header[j]
+                    channel_id = self._channel_to_id[channel]
 
-                total_data += 1
-                if (mask[bin_id][channel_id] == 1):
-                    unused_data += 1
-                mask[bin_id][channel_id] = 1
-                write(data, bin_id, channel, row[j], begin_pos)
-                original_value[bin_id][channel_id] = row[j]
+                    total_data += 1
+                    if (mask[bin_id][channel_id] == 1):
+                        unused_data += 1
+                    mask[bin_id][channel_id] = 1
+                    write(data, bin_id, channel, row[j], begin_pos)
+                    original_value[bin_id][channel_id] = row[j]
+                except:
+                    pass
 
         # impute missing values
 
@@ -639,15 +648,18 @@ class Discretizer():
             for j in range(1, len(row)):
                 if (row[j] == ""):
                     continue
-                channel = header[j]
-                channel_id = self._channel_to_id[channel]
+                try:
+                    channel = header[j]
+                    channel_id = self._channel_to_id[channel]
 
-                total_data += 1
-                if (mask[bin_id][channel_id] == 1):
-                    unused_data += 1
-                mask[bin_id][channel_id] = 1
-                write(data, bin_id, channel, row[j], begin_pos)
-                original_value[bin_id][channel_id] = row[j]
+                    total_data += 1
+                    if (mask[bin_id][channel_id] == 1):
+                        unused_data += 1
+                    mask[bin_id][channel_id] = 1
+                    write(data, bin_id, channel, row[j], begin_pos)
+                    original_value[bin_id][channel_id] = row[j]
+                except:
+                    pass
 
         # impute missing values
 
