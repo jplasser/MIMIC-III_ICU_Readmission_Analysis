@@ -128,14 +128,17 @@ def age_normalize(demographic, age_means, age_std):
 #    args.save_every = 2**30
 small_part = False
 target_repl = False #(args.target_repl_coef > 0.0 and args.mode == 'train')
+
+base_path = "/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis"
+
 #Read embedding
 embeddings, word_indices = get_embeddings(corpus='claims_codes_hs', dim=300)
 
-train_reader = ReadmissionReader(dataset_dir='./readm_data/',
-                                         listfile='./MIMIC-III-clean/0_train_listfile801010.csv')
+train_reader = ReadmissionReader(dataset_dir=f'{base_path}/readm_data/',
+                                         listfile=f'{base_path}/MIMIC-III-clean/0_train_listfile801010.csv')
 
-val_reader = ReadmissionReader(dataset_dir='./readm_data/',
-                                       listfile='./MIMIC-III-clean/0_val_listfile801010.csv')
+val_reader = ReadmissionReader(dataset_dir=f'{base_path}/readm_data/',
+                                       listfile=f'{base_path}/MIMIC-III-clean/0_val_listfile801010.csv')
 
 timestep = 1
 discretizer = Discretizer(timestep=float(timestep),
@@ -149,9 +152,9 @@ data = ret["X"]
 ts = ret["t"]
 labels = ret["y"]
 names = ret["name"]
-diseases_list=get_diseases(names, './data/')
+diseases_list=get_diseases(names, f'{base_path}/data/')
 diseases_embedding=disease_embedding(embeddings, word_indices,diseases_list)
-demographic=get_demographic(names, './data/')
+demographic=get_demographic(names, f'{base_path}/data/')
 
 age_means=sum(demographic[:][0])
 age_std=statistics.stdev(demographic[:][0])
@@ -229,9 +232,9 @@ N1=val_reader.get_number_of_examples()
 ret1 = common_utils.read_chunk(val_reader, N1)
 
 names1 = ret1["name"]
-diseases_list1=get_diseases(names1, './data/')
+diseases_list1=get_diseases(names1, f'{base_path}/data/')
 diseases_embedding1=disease_embedding(embeddings, word_indices,diseases_list1)
-demographic1=get_demographic(names1, './data/')
+demographic1=get_demographic(names1, f'{base_path}/data/')
 demographic1=age_normalize(demographic1, age_means, age_std)
 
 
@@ -294,16 +297,16 @@ del val_reader
 del train_raw
 del val_raw
 
-test_reader = ReadmissionReader(dataset_dir='./readm_data/',
-                                listfile='./MIMIC-III-clean/0_test_listfile801010.csv')
+test_reader = ReadmissionReader(dataset_dir=f'{base_path}/readm_data/',
+                                listfile=f'{base_path}/MIMIC-III-clean/0_test_listfile801010.csv')
 
 N = test_reader.get_number_of_examples()
 re = common_utils.read_chunk(test_reader, N)
 
 names_t = re["name"]
-diseases_list_t = get_diseases(names_t, './data/')
+diseases_list_t = get_diseases(names_t, f'{base_path}/data/')
 diseases_embedding_t = disease_embedding(embeddings, word_indices, diseases_list_t)
-demographic_t = get_demographic(names_t, './data/')
+demographic_t = get_demographic(names_t, f'{base_path}/data/')
 demographic_t = age_normalize(demographic_t, age_means, age_std)
 
 ret = utils.load_data(test_reader, discretizer, normalizer, diseases_embedding_t, demographic_t, small_part,
