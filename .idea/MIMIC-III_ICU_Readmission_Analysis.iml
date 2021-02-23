@@ -5,7 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/mimic3-readmission" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/__MACOSX" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.6 (ICU_Readmission_Analysis_Data_Setup)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.6 (MIMIC-III_ICU_Readmission_Analysis_3.6)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">
