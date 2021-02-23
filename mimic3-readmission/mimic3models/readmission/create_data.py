@@ -20,7 +20,7 @@ from keras.callbacks import ModelCheckpoint, CSVLogger
 from keras.optimizers import Adam
 from utilities.data_loader import get_embeddings
 import statistics
-
+import pickle
 
 g_map = { 'F': 1, 'M': 2 }
 
