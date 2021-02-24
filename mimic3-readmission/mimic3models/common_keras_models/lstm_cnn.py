@@ -58,7 +58,7 @@ class Network(Model):
                         activation='tanh',
                         return_sequences=True,
                         dropout_U=rec_dropout,
-                        dropout_W=dropout)
+                        dropout_W=dropout) #LSTM(8, activation="tanh", return_sequences=True, dropout=0.3, recurrent_dropout=0.0)
 
 
             if is_bidirectional:
@@ -70,7 +70,7 @@ class Network(Model):
                  activation='tanh',
                  return_sequences=True,
                  dropout_W=dropout,
-                 dropout_U=rec_dropout)(X)
+                 dropout_U=rec_dropout)(X) # LSTM(16, activation="tanh", return_sequences=True, dropout=0.3, recurrent_dropout=0.0)
 
         if dropout > 0:
             L = Dropout(dropout)(L)
@@ -79,17 +79,17 @@ class Network(Model):
         nb_filters=100
         pooling_reps = []
         for i in nfilters:
-            feat_maps = Convolution1D(nb_filter=nb_filters,
-                                      filter_length=i,
-                                      border_mode="valid",
+            feat_maps = Convolution1D(nb_filter=nb_filters, # Conv1D(activation="relu", filters=100, kernel_size=2, strides=1, padding="valid")
+                                      filter_length=i,      # Conv1D(activation="relu", filters=100, kernel_size=3, strides=1, padding="valid")`
+                                      border_mode="valid",  # Conv1D(activation="relu", filters=100, kernel_size=4, strides=1, padding="valid")`
                                       activation="relu",
                                       subsample_length=1)(L)
-            pool_vecs = MaxPooling1D(pool_length=2)(feat_maps)
+            pool_vecs = MaxPooling1D(pool_length=2)(feat_maps) # MaxPooling1D(pool_size=2) pool_vecs = MaxPooling1D(pool_length=2)(feat_maps)
             pool_vecs = Flatten()(pool_vecs)
             pooling_reps.append(pool_vecs)
 
 
-        representation = merge(pooling_reps, mode='concat')
+        representation = merge(pooling_reps, mode='concat') # concatenate
 
         representation = Dropout(self.drop_conv)(representation)
 
