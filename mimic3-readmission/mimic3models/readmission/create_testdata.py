@@ -134,11 +134,11 @@ base_path = "/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_A
 #Read embedding
 embeddings, word_indices = get_embeddings(corpus='claims_codes_hs', dim=300)
 
-# train_reader = ReadmissionReader(dataset_dir=f'{base_path}/readm_data/',
-#                                          listfile=f'{base_path}/MIMIC-III-clean/0_train_listfile801010.csv')
-#
-# val_reader = ReadmissionReader(dataset_dir=f'{base_path}/readm_data/',
-#                                        listfile=f'{base_path}/MIMIC-III-clean/0_val_listfile801010.csv')
+train_reader = ReadmissionReader(dataset_dir=f'{base_path}/readm_data/',
+                                 listfile=f'{base_path}/MIMIC-III-clean/0_train_listfile801010.csv')
+
+val_reader = ReadmissionReader(dataset_dir=f'{base_path}/readm_data/',
+                               listfile=f'{base_path}/MIMIC-III-clean/0_val_listfile801010.csv')
 
 timestep = 1
 discretizer = Discretizer(timestep=float(timestep),
@@ -146,22 +146,22 @@ discretizer = Discretizer(timestep=float(timestep),
                           imput_strategy='previous',
                           start_time='zero')
 
-# N=train_reader.get_number_of_examples()
-# ret = common_utils.read_chunk(train_reader, N)
-# data = ret["X"]
-# ts = ret["t"]
-# labels = ret["y"]
-# names = ret["name"]
-# diseases_list=get_diseases(names, f'{base_path}/data/')
-# diseases_embedding=disease_embedding(embeddings, word_indices,diseases_list)
-# demographic=get_demographic(names, f'{base_path}/data/')
-#
-# age_means=sum(demographic[:][0])
-# age_std=statistics.stdev(demographic[:][0])
-#
-# print('age_means: ', age_means)
-# print('age_std: ', age_std)
-# demographic=age_normalize(demographic, age_means, age_std)
+N=train_reader.get_number_of_examples()
+ret = common_utils.read_chunk(train_reader, N)
+data = ret["X"]
+ts = ret["t"]
+labels = ret["y"]
+names = ret["name"]
+diseases_list=get_diseases(names, f'{base_path}/data/')
+diseases_embedding=disease_embedding(embeddings, word_indices,diseases_list)
+demographic=get_demographic(names, f'{base_path}/data/')
+
+age_means=sum(demographic[:][0])
+age_std=statistics.stdev(demographic[:][0])
+
+print('age_means: ', age_means)
+print('age_std: ', age_std)
+demographic=age_normalize(demographic, age_means, age_std)
 
 # headers_from_csv = "Hours,Alanine aminotransferase,Albumin,Alkaline phosphate,Anion gap,Asparate aminotransferase,Basophils,Bicarbonate,Bilirubin,Blood culture,Blood urea nitrogen,Calcium,Calcium ionized,Capillary refill rate,Chloride,Cholesterol,Creatinine,Diastolic blood pressure,Eosinophils,Fraction inspired oxygen,Glascow coma scale eye opening,Glascow coma scale motor response,Glascow coma scale total,Glascow coma scale verbal response,Glucose,Heart Rate,Height,Hematocrit,Hemoglobin,Lactate,Lactate dehydrogenase,Lactic acid,Lymphocytes,Magnesium,Mean blood pressure,Mean corpuscular hemoglobin,Mean corpuscular hemoglobin concentration,Mean corpuscular volume,Monocytes,Neutrophils,Oxygen saturation,Partial pressure of carbon dioxide,Partial pressure of oxygen,Partial thromboplastin time,Peak inspiratory pressure,Phosphate,Platelets,Positive end-expiratory pressure,Potassium,Prothrombin time,Pupillary response left,Pupillary response right,Pupillary size left,Pupillary size right,Red blood cell count,Respiratory rate,Sodium,Systolic blood pressure,Temperature,Troponin-I,Troponin-T,Urine output,Weight,White blood cell count,pH"
 # header_list_from_csv = headers_from_csv.split(',')
@@ -200,12 +200,3 @@ print ("==> test data generation")
 with open(os.path.join(path, 'test_data'), 'wb') as pickle_file:
     pickle.dump(ret, pickle_file)
 
-#predictions = model.predict(data, batch_size=args.batch_size, verbose=1)
-#predictions = np.array(predictions)[:, 0]
-#metrics.print_metrics_binary(labels, predictions)
-
-#path = os.path.join("test_predictions", os.path.basename(args.load_state)) + ".csv"
-#utils.save_results(names, predictions, labels, path)
-
-#else:
-#    raise ValueError("Wrong value for args.mode")
