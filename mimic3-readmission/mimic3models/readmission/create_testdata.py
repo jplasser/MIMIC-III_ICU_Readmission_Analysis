@@ -131,6 +131,13 @@ target_repl = False #(args.target_repl_coef > 0.0 and args.mode == 'train')
 
 base_path = "/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission"
 
+path = 'train_data/'
+
+# make sure save directory exists
+dirname = os.path.dirname(path)
+if not os.path.exists(dirname):
+    os.makedirs(dirname)
+
 #Read embedding
 embeddings, word_indices = get_embeddings(corpus='claims_codes_hs', dim=300)
 
