@@ -318,7 +318,7 @@ names = ret["names"]
 
 print ("==> test data generation")
 with open(os.path.join(path, 'test_data'), 'wb') as pickle_file:
-    pickle.dump(data, pickle_file)
+    pickle.dump(ret, pickle_file)
 
 #predictions = model.predict(data, batch_size=args.batch_size, verbose=1)
 #predictions = np.array(predictions)[:, 0]
