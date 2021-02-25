@@ -163,17 +163,17 @@ print('age_means: ', age_means)
 print('age_std: ', age_std)
 demographic=age_normalize(demographic, age_means, age_std)
 
-# headers_from_csv = "Hours,Alanine aminotransferase,Albumin,Alkaline phosphate,Anion gap,Asparate aminotransferase,Basophils,Bicarbonate,Bilirubin,Blood culture,Blood urea nitrogen,Calcium,Calcium ionized,Capillary refill rate,Chloride,Cholesterol,Creatinine,Diastolic blood pressure,Eosinophils,Fraction inspired oxygen,Glascow coma scale eye opening,Glascow coma scale motor response,Glascow coma scale total,Glascow coma scale verbal response,Glucose,Heart Rate,Height,Hematocrit,Hemoglobin,Lactate,Lactate dehydrogenase,Lactic acid,Lymphocytes,Magnesium,Mean blood pressure,Mean corpuscular hemoglobin,Mean corpuscular hemoglobin concentration,Mean corpuscular volume,Monocytes,Neutrophils,Oxygen saturation,Partial pressure of carbon dioxide,Partial pressure of oxygen,Partial thromboplastin time,Peak inspiratory pressure,Phosphate,Platelets,Positive end-expiratory pressure,Potassium,Prothrombin time,Pupillary response left,Pupillary response right,Pupillary size left,Pupillary size right,Red blood cell count,Respiratory rate,Sodium,Systolic blood pressure,Temperature,Troponin-I,Troponin-T,Urine output,Weight,White blood cell count,pH"
-# header_list_from_csv = headers_from_csv.split(',')
-#
-# discretizer_header = discretizer.transform(ret["X"][0], header=header_list_from_csv)[1].split(',')
-# cont_channels = [i for (i, x) in enumerate(discretizer_header) if x.find("->") == -1]
-# normalizer = Normalizer(fields=cont_channels)  # choose here onlycont vs all
-#
-# data = [discretizer.transform_end_t_hours(X, header=header_list_from_csv, los=t)[0] for (X, t) in zip(data, ts)]
-#
-# [normalizer._feed_data(x=X) for X in data]
-# normalizer._use_params()
+headers_from_csv = "Hours,Alanine aminotransferase,Albumin,Alkaline phosphate,Anion gap,Asparate aminotransferase,Basophils,Bicarbonate,Bilirubin,Blood culture,Blood urea nitrogen,Calcium,Calcium ionized,Capillary refill rate,Chloride,Cholesterol,Creatinine,Diastolic blood pressure,Eosinophils,Fraction inspired oxygen,Glascow coma scale eye opening,Glascow coma scale motor response,Glascow coma scale total,Glascow coma scale verbal response,Glucose,Heart Rate,Height,Hematocrit,Hemoglobin,Lactate,Lactate dehydrogenase,Lactic acid,Lymphocytes,Magnesium,Mean blood pressure,Mean corpuscular hemoglobin,Mean corpuscular hemoglobin concentration,Mean corpuscular volume,Monocytes,Neutrophils,Oxygen saturation,Partial pressure of carbon dioxide,Partial pressure of oxygen,Partial thromboplastin time,Peak inspiratory pressure,Phosphate,Platelets,Positive end-expiratory pressure,Potassium,Prothrombin time,Pupillary response left,Pupillary response right,Pupillary size left,Pupillary size right,Red blood cell count,Respiratory rate,Sodium,Systolic blood pressure,Temperature,Troponin-I,Troponin-T,Urine output,Weight,White blood cell count,pH"
+header_list_from_csv = headers_from_csv.split(',')
+
+discretizer_header = discretizer.transform(ret["X"][0], header=header_list_from_csv)[1].split(',')
+cont_channels = [i for (i, x) in enumerate(discretizer_header) if x.find("->") == -1]
+normalizer = Normalizer(fields=cont_channels)  # choose here onlycont vs all
+
+data = [discretizer.transform_end_t_hours(X, header=header_list_from_csv, los=t)[0] for (X, t) in zip(data, ts)]
+
+[normalizer._feed_data(x=X) for X in data]
+normalizer._use_params()
 
 
 # Read data
