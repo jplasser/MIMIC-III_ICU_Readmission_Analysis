@@ -31,7 +31,7 @@ def print_metrics_binary(y_true, predictions, verbose=1):
         print ("precision class 0 =", prec0)
         print ("precision class 1 =", prec1)
         print ("recall class 0 =", rec0)
-        print ("recall calss 1 =", rec1)
+        print ("recall class 1 =", rec1)
         print ("AUC of ROC =", auroc)
         print ("AUC of PRC =", auprc)
 
