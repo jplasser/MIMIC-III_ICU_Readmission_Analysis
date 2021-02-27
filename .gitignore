@@ -149,3 +149,4 @@ mimic3-readmission/embeddings/claims_codes_hs.300d.txt
 mimic3-readmission/embeddings/claims_cuis_hs.300d.txt
 mimic3-readmission/embeddings/stanford_cuis_svd.300d.txt
 mimic3-readmission/readm_data/
+mimic3-readmission/mimic3models/readmission/train_data/
