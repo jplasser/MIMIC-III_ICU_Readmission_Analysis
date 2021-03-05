@@ -278,6 +278,11 @@ if not os.path.exists(dirname):
 print ("==> training data generation")
 with open(os.path.join(path, 'train_data'), 'wb') as pickle_file:
     pickle.dump(train_raw, pickle_file)
+print ("==> validation data generation")
+with open(os.path.join(path, 'val_data'), 'wb') as pickle_file:
+    pickle.dump(val_raw, pickle_file)
+
+
 
 #model.fit(x=train_raw[0],
 #          y=train_raw[1],
