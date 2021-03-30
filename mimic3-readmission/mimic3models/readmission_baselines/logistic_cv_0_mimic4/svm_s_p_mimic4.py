@@ -31,8 +31,8 @@ fig = plt.figure(figsize=(7,7))
 
 def read_diagnose(subject_path,icustay):
     diagnoses = dataframe_from_csv(os.path.join(subject_path, 'diagnoses.csv'), index_col=None)
-    diagnoses=diagnoses.ix[(diagnoses.ICUSTAY_ID==int(icustay))]
-    diagnoses=diagnoses['ICD9_CODE'].values.tolist()
+    diagnoses=diagnoses.ix[(diagnoses.stay_id==int(icustay))]
+    diagnoses=diagnoses['icd_code'].values.tolist()
 
     return diagnoses
 
@@ -128,14 +128,14 @@ def column_sum(M):
 embeddings, word_indices = get_embeddings(corpus='claims_codes_hs', dim=300)
 
 # Build readers, discretizers, normalizers
-train_reader = ReadmissionReader(dataset_dir='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
-                                         listfile='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_train_listfile801010.csv')
+train_reader = ReadmissionReader(dataset_dir='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic4readmdata/',
+                                         listfile='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-IV-clean/0_train_listfile801010.csv')
 
-val_reader = ReadmissionReader(dataset_dir='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
-                                       listfile='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_val_listfile801010.csv')
+val_reader = ReadmissionReader(dataset_dir='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic4readmdata/',
+                                       listfile='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-IV-clean/0_val_listfile801010.csv')
 
-test_reader = ReadmissionReader(dataset_dir='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/readm_data/',
-                                    listfile='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-III-clean/0_test_listfile801010.csv')
+test_reader = ReadmissionReader(dataset_dir='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic4readmdata/',
+                                    listfile='/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/MIMIC-IV-clean/0_test_listfile801010.csv')
 
 print("before discretize...")
 discretizer = Discretizer(timestep=float(1.0),
@@ -153,7 +153,7 @@ ts = ret["t"]
 train_y = ret["y"]
 train_names = ret["name"]
 print("before get diseases...")
-diseases_list=get_diseases(train_names, '/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
+diseases_list=get_diseases(train_names, '/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic4data/')
 print("after get diseases...")
 print("before disease embeddings...")
 diseases_embedding=disease_embedding(embeddings, word_indices,diseases_list)
@@ -241,7 +241,7 @@ ts_val = ret_val["t"]
 val_y= ret_val["y"]
 val_names = ret_val["name"]
 
-diseases_list_val=get_diseases(val_names, '/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
+diseases_list_val=get_diseases(val_names, '/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic4data/')
 diseases_embedding_val=disease_embedding(embeddings, word_indices,diseases_list_val)
 
 
@@ -273,7 +273,7 @@ ts_test = ret_test["t"]
 test_y= ret_test["y"]
 test_names = ret_test["name"]
 
-diseases_list_test = get_diseases(test_names, '/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/data/')
+diseases_list_test = get_diseases(test_names, '/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic4data/')
 diseases_embedding_test=disease_embedding(embeddings, word_indices,diseases_list_test)
 
 #----------
@@ -458,11 +458,9 @@ plt.ylim([0., 1.])
 
 plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
-plt.title('ROC curve')
+plt.title('ROC curve (MIMIC-IV)')
 plt.legend(loc="lower right")
 
-
-
-fig.savefig('/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic3models/readmission_baselines/logistic_cv_0/ROC0.png')
+fig.savefig('/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic3models/readmission_baselines/logistic_cv_0_mimic4/ROC0_mimic4.png')
 
 plt.show()
