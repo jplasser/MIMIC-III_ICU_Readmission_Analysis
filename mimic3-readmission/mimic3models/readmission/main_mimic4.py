@@ -172,12 +172,11 @@ target_repl = (args.target_repl_coef > 0.0 and args.mode == 'train')
 #
 # [normalizer._feed_data(x=X) for X in data]
 # normalizer._use_params()
-#
-#
-# args_dict = dict(args._get_kwargs())
-#
-# args_dict['task'] = 'ihm'
-# args_dict['target_repl'] = target_repl
+
+args_dict = dict(args._get_kwargs())
+
+args_dict['task'] = 'ihm'
+args_dict['target_repl'] = target_repl
 
 # Build the model
 print ("==> using model {}".format(args.network))
