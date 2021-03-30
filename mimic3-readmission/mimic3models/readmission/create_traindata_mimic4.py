@@ -1,23 +1,23 @@
 import numpy as np
-import argparse
+#import argparse
 import os
 os.environ["KERAS_BACKEND"]="tensorflow"
 
-import importlib.machinery
-import re
+#import importlib.machinery
+#import re
 from mimic3benchmark.util import *
 
 
 from mimic3models.readmission import utils
-from mimic3benchmark.readers import ReadmissionReader
+from mimic4benchmark.readers import ReadmissionReader
 
 from mimic3models.preprocessing import Discretizer, Normalizer
 from mimic3models import metrics
 from mimic3models import keras_utils
 from mimic3models import common_utils
 
-from keras.callbacks import ModelCheckpoint, CSVLogger
-from keras.optimizers import Adam
+#from keras.callbacks import ModelCheckpoint, CSVLogger
+#from keras.optimizers import Adam
 from utilities.data_loader import get_embeddings
 import statistics
 import pickle
@@ -34,17 +34,32 @@ e_map = { 'ASIAN': 1,
           'UNKNOWN': 0,
           '': 0 }
 
-i_map={'Government': 0,
+i_map={'Other': 0,      # was Government
        'Self Pay': 1,
        'Medicare':2,
        'Private':3,
-       'Medicaid':4}
+       'Medicaid':4
+       }
 
+# convert all icd10 codes to icd9
+dict = open('resources/ICD_9_10_d_v1.1.csv')
+#csv_dict = csv.reader(dict, delimiter='|')
+dict_icd10 = {}
+for p1 in dict.readlines():
+    p2 = p1.strip()
+    p3 = p2.replace(".","")
+    p = p3.split("|")
+    dict_icd10[p[0]] = p[1]
 
 def read_diagnose(subject_path,icustay):
     diagnoses = dataframe_from_csv(os.path.join(subject_path, 'diagnoses.csv'), index_col=None)
-    diagnoses=diagnoses.ix[(diagnoses.stay_id==int(icustay))]
-    diagnoses=diagnoses['icd_code'].values.tolist()
+    diagnoses = diagnoses.ix[(diagnoses.stay_id==int(icustay))]
+    diagnoses_ = diagnoses['icd_code'].values.tolist()
+
+    # convert all known ICD10 codes to ICD9
+    diagnoses = []
+    for d in diagnoses_:
+        diagnoses.append(dict_icd10.get(d, d))
 
     return diagnoses
 
@@ -76,7 +91,7 @@ def read_demographic(subject_path,icustay,episode):
 
     insurance=insurance.ix[(insurance.stay_id==int(icustay))]
 
-    demographic_re[insurance_strat+i_map[insurance['insurance'].iloc[0]]]=1
+    demographic_re[insurance_strat + i_map[insurance['insurance'].iloc[0]]]=1
 
     return demographic_re
 
