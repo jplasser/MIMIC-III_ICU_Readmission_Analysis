@@ -1,4 +1,4 @@
-name: ICU_Readmission_Analysis_Data_Setup
+name: /system/apps/userenv/students/plasser/ICU_Readmission_Analysis_Data_Setup
 channels:
   - conda-forge
   - defaults
@@ -168,3 +168,13 @@ dependencies:
   - zeromq=4.3.4=h9c3ff4c_0
   - zipp=3.4.0=py_0
   - zlib=1.2.11=h516909a_1010
+  - pip:
+    - beautifulsoup4==4.9.3
+    - brotli==1.0.9
+    - click==7.1.2
+    - flask==1.1.2
+    - flask-compress==1.9.0
+    - hiplot==0.1.24
+    - itsdangerous==1.1.0
+    - soupsieve==2.2.1
+prefix: /system/apps/userenv/students/plasser/ICU_Readmission_Analysis_Data_Setup

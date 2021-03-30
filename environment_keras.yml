@@ -1,4 +1,4 @@
-name: ICU_Readmission_Analysis_Keras_Setup
+name: /system/apps/userenv/students/plasser/ICU_Readmission_Analysis_Keras_Setup
 channels:
   - conda-forge
   - defaults
@@ -169,3 +169,4 @@ dependencies:
   - zlib=1.2.11=h516909a_1010
   - pip:
     - keras==2.1.2
+prefix: /system/apps/userenv/students/plasser/ICU_Readmission_Analysis_Keras_Setup
