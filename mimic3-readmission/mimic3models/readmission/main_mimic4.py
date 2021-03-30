@@ -274,8 +274,8 @@ if args.mode == 'train':
         os.makedirs(dirname)
     saver = ModelCheckpoint(path, verbose=1, period=args.save_every)
 
-    if not os.path.exists('keras_logs'):
-        os.makedirs('keras_logs')
+    if not os.path.exists('keras_logs_mimic4'):
+        os.makedirs('keras_logs_mimic4')
     csv_logger = CSVLogger(os.path.join('keras_logs_mimic4', model.final_name + '.csv'),
                            append=True, separator=';')
 
