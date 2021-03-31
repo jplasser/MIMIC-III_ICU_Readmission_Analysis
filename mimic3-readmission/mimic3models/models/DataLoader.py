@@ -16,7 +16,6 @@ class MIMICDataset(Dataset):
         """
         self.x = data[0]
         self.y = data[1]
-        #self.index = (torch.arange(48)-24).float()/48
 
     def __len__(self):
         return len(self.x)
@@ -25,7 +24,6 @@ class MIMICDataset(Dataset):
         if torch.is_tensor(idx):
             idx = idx.tolist()
 
-        #x = torch.cat((self.index[:, None], torch.tensor(self.x[idx], dtype=torch.float32)), 1)
         x = torch.tensor(self.x[idx], dtype=torch.float32)
         y = torch.tensor(self.y[idx], dtype=torch.float32)
 
