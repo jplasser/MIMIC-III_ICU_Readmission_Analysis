@@ -36,9 +36,9 @@ def LoadDataSets(batch_size=64, mimic4=False):
 
     #mimic4 = False
     if mimic4:
-        data_path = "../readmission/train_data_mimic4/"
+        data_path = "/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic3models/readmission/train_data_mimic4/"
     else:
-        data_path = "../readmission/train_data/"
+        data_path = "/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic3models/readmission/train_data/"
 
     print(f"Loading train, test and validation data... from {data_path}")
     train_data = pickle.load(open(f"{data_path}train_data", "rb" ))
