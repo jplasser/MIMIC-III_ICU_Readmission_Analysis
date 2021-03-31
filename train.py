@@ -62,7 +62,6 @@ best_loss = 100000
 print("Hyperparameters:")
 print(f"hidden_dim = {hidden_dim}, lstm_layers = {lstm_layers}, lr = {lr}, dropout = {dropout}, dropout_w = {dropout_w}, dropout_conv = {dropout_conv}")
 
-#number_epochs = 5
 print()
 print(f"Training is set for maximal number of {number_epochs} epochs.")
 

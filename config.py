@@ -11,5 +11,4 @@ hidden_dim, lstm_layers, lr, dropout, dropout_w, dropout_conv = (8, 2, 1e-3, 0.3
 number_epochs = 5
 
 # path of the preprocessed pickle files
-# "/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic3models/readmission/
-datasetpath = '../readmission/'
+datasetpath = '/system/user/publicwork/student/plasser/MIMIC-III_ICU_Readmission_Analysis/mimic3-readmission/mimic3models/readmission/'
