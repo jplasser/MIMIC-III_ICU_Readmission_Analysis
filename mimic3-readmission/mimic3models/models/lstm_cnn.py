@@ -937,6 +937,7 @@ def plotLoss(train_loss, val_loss):
     plt.xlabel('# Epochs')
     plt.ylabel('Loss')
     plt.show()
+    plt.savefig('plot-losscurve.png')
     
 def plotAUC(targets, outputs):
     fpr, tpr, threshold = metrics.roc_curve(targets, outputs)
@@ -952,3 +953,4 @@ def plotAUC(targets, outputs):
     plt.ylabel('True Positive Rate')
     plt.xlabel('False Positive Rate')
     plt.show()
+    plt.savefig('plot-AUC.png')
