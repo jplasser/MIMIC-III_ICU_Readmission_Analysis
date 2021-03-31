@@ -6,15 +6,12 @@ import torch
 from mimic3models.models.DataLoader import LoadDataSets
 from mimic3models.models.lstm_cnn import LSTM_CNN4
 from mimic3models.models.lstm_cnn import calcMetrics, plotAUC
+from config import mimic4, hidden_dim, lstm_layers, lr, dropout, dropout_w, dropout_conv, number_epochs, datasetpath
 
-# MIMIC value should match the value of the training data
-mimic4=True
-
-dataloader_train, dataloader_val, dataloader_test = LoadDataSets(batch_size=64,mimic4=mimic4)
+dataloader_train, dataloader_val, dataloader_test = LoadDataSets(batch_size=64,mimic4=mimic4, datasetpath=datasetpath)
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # # Evaluate best model, these values should also match the trained model
-hidden_dim, lstm_layers, lr, dropout, dropout_w, dropout_conv = (8, 2, 1e-3, 0.3, 0.2, 0.2)
 model = LSTM_CNN4(hidden_dim=hidden_dim, lstm_layers=lstm_layers, dropout=0.5, dropout_w=0.5, dropout_conv=0.5)
 model.to(device)
 

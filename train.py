@@ -5,6 +5,7 @@ import torch
 import numpy as np
 import random
 import glob
+from config import mimic4, hidden_dim, lstm_layers, lr, dropout, dropout_w, dropout_conv, number_epochs, datasetpath
 
 from mimic3models.models.DataLoader import LoadDataSets
 from mimic3models.models.lstm_cnn import trainer, plotLoss
@@ -20,13 +21,7 @@ def randseed(seed=42):
 randseed()
 
 
-# # Load Training, Test and Validation Data Sets
-# 
-# Set `mimic4` to `True` if you want to evaluate against MIMIC-IV, or to `False` for MIMIC-III.
-# if you want to evaluate models with MIMIC-III then sey mimic=False
-# if you want to evaluate models with MIMIC-IV then sey mimic=True
-mimic4 = True
-
+# Load Training, Test and Validation Data Sets
 try:
     del train_data
 except:
@@ -49,16 +44,11 @@ if mimic4:
 else:
     print("Training uses MIMIC-III data.")
 
-dataloader_train, dataloader_val, dataloader_test = LoadDataSets(batch_size=64,mimic4=mimic4)
+dataloader_train, dataloader_val, dataloader_test = LoadDataSets(batch_size=64,mimic4=mimic4, datasetpath=datasetpath)
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-# # Train a specific LSTM+CNN model
-# 
-# Before running the cell set the best model hyperparameters for MIMIC-III/IV:
-# 
-# `hidden_dim, lstm_layers, lr, dropout, dropout_w, dropout_conv = (16, 2, 1e-3, 0.5, 0.3, 0.5)`
-randseed()
+# Train a specific LSTM+CNN model
 
 # define threshold
 threshold = 0.5
@@ -68,11 +58,11 @@ best_accuracy = 0
 best_roc_auc = 0
 best_loss = 100000
 
-hidden_dim, lstm_layers, lr, dropout, dropout_w, dropout_conv = (8, 2, 1e-3, 0.3, 0.2, 0.2)
+#hidden_dim, lstm_layers, lr, dropout, dropout_w, dropout_conv = (8, 2, 1e-3, 0.3, 0.2, 0.2)
 print("Hyperparameters:")
 print(f"hidden_dim = {hidden_dim}, lstm_layers = {lstm_layers}, lr = {lr}, dropout = {dropout}, dropout_w = {dropout_w}, dropout_conv = {dropout_conv}")
 
-number_epochs = 5
+#number_epochs = 5
 print()
 print(f"Training is set for maximal number of {number_epochs} epochs.")
 
