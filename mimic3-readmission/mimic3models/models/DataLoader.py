@@ -1,22 +1,8 @@
-import pandas as pd
 import pickle
-import glob
-
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
-from sklearn import metrics
-from tqdm import tqdm
 import numpy as np
 import random
-
-import mimic3models.metrics as m
-import matplotlib.pyplot as plt
-
-import hiplot as hip
-import re
 
 # Load test and train data from Pickle files
 
@@ -54,13 +40,6 @@ def LoadDataSets(batch_size=64, mimic4=False):
     else:
         data_path = "../readmission/train_data/"
 
-    #already_loaded = True
-    #try:
-    #    train_data
-    #except NameError as e:
-    #    already_loaded = False
-
-    #if not already_loaded:
     print(f"Loading train, test and validation data... from {data_path}")
     train_data = pickle.load(open(f"{data_path}train_data", "rb" ))
     val_data = pickle.load(open(f"{data_path}val_data", "rb" ))
@@ -74,8 +53,6 @@ def LoadDataSets(batch_size=64, mimic4=False):
     ds_val = MIMICDataset(val_data)
     ds_test = MIMICDataset(test_data['data'])
     
-    # default batch size
-    #batch_size = 64
     num_workers = 1
 
     # helper for random seed

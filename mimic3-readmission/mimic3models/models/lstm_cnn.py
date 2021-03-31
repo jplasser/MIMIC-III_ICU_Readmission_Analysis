@@ -1,16 +1,7 @@
-from torch import nn
-import torch
 import torch.nn as nn
 from torch.nn.utils.rnn import PackedSequence
-from typing import *
-import torch.nn.functional as F
-import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader
 from sklearn import metrics
-from tqdm import tqdm
 import numpy as np
-import random
-
 import mimic3models.metrics as m
 import matplotlib.pyplot as plt
 
@@ -57,13 +48,6 @@ class LSTM_CNN(nn.Module):
         # concat the three outputs from the CNN
         self.do2 = nn.Dropout(self.drop_conv)
         self.dense = nn.Linear(self.hidden_dim, self.num_classes)
-
-        # change linear layer inputs depending on if lstm is bidrectional
-        #if not bidirectional:
-        #    self.linear = nn.Linear(self.hidden_dim, self.hidden_dim)
-        #else:
-        #    self.linear = nn.Linear(self.hidden_dim * 2, self.hidden_dim)
-        #self.act2 = nn.ReLU()
 
         # change linear layer inputs depending on if lstm is bidrectional and extra dense layer isn't added
         if bidirectional and not dense:
@@ -144,131 +128,61 @@ class LSTM_CNN2(nn.Module):
         nfilters=[2, 3, 4]
         nb_filters=100
         pooling_reps = []
-        
-        #self.cnns = nn.Module()
-        #for idx, k in enumerate(nfilters):
-        #    self.cnns.add_module(f"cnn{idx}", nn.Sequential(
-        #        # torch.nn.Conv1d(in_channels: int, out_channels: int, kernel_size: Union[T, Tuple[T]],
-        #        # stride: Union[T, Tuple[T]] = 1, padding: Union[T, Tuple[T]] = 0,
-        #        # dilation: Union[T, Tuple[T]] = 1, groups: int = 1, bias: bool = True,
-        #        # padding_mode: str = 'zeros')
-        #        nn.Conv1d(in_channels=16, out_channels=nb_filters, kernel_size=k,
-        #                  stride=1, padding=0, dilation=1, groups=1, bias=True,
-        #                  padding_mode='zeros'),
-        #        nn.ReLU(),
-        #        # torch.nn.MaxPool1d(kernel_size: Union[T, Tuple[T, ...]],
-        #        # stride: Optional[Union[T, Tuple[T, ...]]] = None, padding: Union[T, Tuple[T, ...]] = 0,
-        #        # dilation: Union[T, Tuple[T, ...]] = 1, return_indices: bool = False, ceil_mode: bool = False)
-        #        nn.MaxPool1d(kernel_size=2),
-        #        nn.Flatten()
-        #    ))
             
         self.cnn1 = nn.Sequential(
-                # torch.nn.Conv1d(in_channels: int, out_channels: int, kernel_size: Union[T, Tuple[T]],
-                # stride: Union[T, Tuple[T]] = 1, padding: Union[T, Tuple[T]] = 0,
-                # dilation: Union[T, Tuple[T]] = 1, groups: int = 1, bias: bool = True,
-                # padding_mode: str = 'zeros')
                 nn.Conv1d(in_channels=self.hidden_dim*2, out_channels=nb_filters, kernel_size=2,
                           stride=1, padding=0, dilation=1, groups=1, bias=True,
                           padding_mode='zeros'),
                 nn.ReLU(),
-                # torch.nn.MaxPool1d(kernel_size: Union[T, Tuple[T, ...]],
-                # stride: Optional[Union[T, Tuple[T, ...]]] = None, padding: Union[T, Tuple[T, ...]] = 0,
-                # dilation: Union[T, Tuple[T, ...]] = 1, return_indices: bool = False, ceil_mode: bool = False)
                 nn.MaxPool1d(kernel_size=2),
-                nn.Flatten()#,
-                #nn.BatchNorm1d(2300)
+                nn.Flatten()
             )
         
         self.cnn2 = nn.Sequential(
-                # torch.nn.Conv1d(in_channels: int, out_channels: int, kernel_size: Union[T, Tuple[T]],
-                # stride: Union[T, Tuple[T]] = 1, padding: Union[T, Tuple[T]] = 0,
-                # dilation: Union[T, Tuple[T]] = 1, groups: int = 1, bias: bool = True,
-                # padding_mode: str = 'zeros')
                 nn.Conv1d(in_channels=self.hidden_dim*2, out_channels=nb_filters, kernel_size=3,
                           stride=1, padding=0, dilation=1, groups=1, bias=True,
                           padding_mode='zeros'),
                 nn.ReLU(),
-                # torch.nn.MaxPool1d(kernel_size: Union[T, Tuple[T, ...]],
-                # stride: Optional[Union[T, Tuple[T, ...]]] = None, padding: Union[T, Tuple[T, ...]] = 0,
-                # dilation: Union[T, Tuple[T, ...]] = 1, return_indices: bool = False, ceil_mode: bool = False)
                 nn.MaxPool1d(kernel_size=2),
-                nn.Flatten()#,
-                #nn.BatchNorm1d(2300)
+                nn.Flatten()
             )
         
         self.cnn3 = nn.Sequential(
-                # torch.nn.Conv1d(in_channels: int, out_channels: int, kernel_size: Union[T, Tuple[T]],
-                # stride: Union[T, Tuple[T]] = 1, padding: Union[T, Tuple[T]] = 0,
-                # dilation: Union[T, Tuple[T]] = 1, groups: int = 1, bias: bool = True,
-                # padding_mode: str = 'zeros')
                 nn.Conv1d(in_channels=self.hidden_dim*2, out_channels=nb_filters, kernel_size=4,
                           stride=1, padding=0, dilation=1, groups=1, bias=True,
                           padding_mode='zeros'),
                 nn.ReLU(),
-                # torch.nn.MaxPool1d(kernel_size: Union[T, Tuple[T, ...]],
-                # stride: Optional[Union[T, Tuple[T, ...]]] = None, padding: Union[T, Tuple[T, ...]] = 0,
-                # dilation: Union[T, Tuple[T, ...]] = 1, return_indices: bool = False, ceil_mode: bool = False)
                 nn.MaxPool1d(kernel_size=2),
-                nn.Flatten()#,
-                #nn.BatchNorm1d(2200)
+                nn.Flatten()
             )
         
         self.do2 = nn.Dropout(self.drop_conv)
-        #self.act2 = nn.ReLU()
-        #self.bn1 = nn.BatchNorm1d(6800)
         self.final = nn.Linear(6800, self.num_classes)
-        #self.act3 = nn.ReLU()
-        #self.act3 = nn.Sigmoid()
-
 
     def forward(self, inputs, labels=None):
-        out = inputs #.unsqueeze(1)
-        #print("inputs.shape = ", inputs.shape)
+        out = inputs
         if self.layers >=2:
             out, h = self.lstm1(out)
             out = self.do0(out)
         out, h = self.lstm2(out)
-        #print("out lstm.shape = ", out.shape)
-        ###out = self.act1(out) #[:,-1])
-        #print("out relu.shape = ", out.shape)
         out = self.do1(out)
-        
-        #print("out do1.shape = ", out.shape)
-        #out = self.bn0(out)
-        
+
         pooling_reps = []
-        #for cnn in model.cnns.children():
-        #    pool_vecs = cnn(out.permute((0,2,1))) #.unsqueeze(dim=1))
-        #    #print(f"out pool_vecs = ", pool_vecs.shape)
-        #    pooling_reps.append(pool_vecs)
         
         pool_vecs = self.cnn1(out.permute((0,2,1)))
-        #print(f"out pool_vecs = ", pool_vecs.shape)
         pooling_reps.append(pool_vecs)
         
         pool_vecs = self.cnn2(out.permute((0,2,1)))
-        #print(f"out pool_vecs = ", pool_vecs.shape)
         pooling_reps.append(pool_vecs)
         
         pool_vecs = self.cnn3(out.permute((0,2,1)))
-        #print(f"out pool_vecs = ", pool_vecs.shape)
         pooling_reps.append(pool_vecs)
-            
-        #print("out pooling_reps = ", pooling_reps)
             
         # concatenate all vectors
         representation = torch.cat(pooling_reps, dim=1).contiguous()
         out = self.do2(representation)
-        #out = self.act2(out) ###
-        #out = self.bn1(out) ###
-        #out = self.act2(out)
-        #print("out do2.shape = ", out.shape)
         out = self.final(out)
-        #out = self.final(representation)
-        #print("out final.shape = ", out.shape)
-        #out = self.act3(out)
-        #print("out final.shape = ", out.shape)
+
         return out
     
     
@@ -508,11 +422,8 @@ class LSTM_CNN3(nn.Module, MCSingleMixin):
         self.hidden_dim = hidden_dim
         self.layers = lstm_layers
         self.bidirectional = True
-        #self.dense = dense
 
         # some more parameters
-        #self.output_dim = dim
-        #self.batch_norm = batch_norm
         self.dropout = 0.3
         self.rec_dropout = 0.3
         self.depth = lstm_layers
@@ -526,9 +437,7 @@ class LSTM_CNN3(nn.Module, MCSingleMixin):
         self.lstm1 = StochasticLSTM(input_size=self.input_dim,
                             hidden_size=self.hidden_dim*2,
                             dropout=self.rec_dropout,
-                            num_layers=self.layers) #,
-                            #bidirectional=self.bidirectional,
-                            #batch_first=True)
+                            num_layers=self.layers)
         self.do0 = nn.Dropout(self.dropout)
         
         # three Convolutional Neural Networks with different kernel sizes
@@ -542,8 +451,7 @@ class LSTM_CNN3(nn.Module, MCSingleMixin):
                           padding_mode='zeros'),
                 nn.ReLU(),
                 nn.MaxPool1d(kernel_size=2),
-                nn.Flatten()#,
-                #nn.BatchNorm1d(2300)
+                nn.Flatten()
             )
         
         self.cnn2 = nn.Sequential(
@@ -552,8 +460,7 @@ class LSTM_CNN3(nn.Module, MCSingleMixin):
                           padding_mode='zeros'),
                 nn.ReLU(),
                 nn.MaxPool1d(kernel_size=2),
-                nn.Flatten()#,
-                #nn.BatchNorm1d(2300)
+                nn.Flatten()
             )
         
         self.cnn3 = nn.Sequential(
@@ -562,16 +469,11 @@ class LSTM_CNN3(nn.Module, MCSingleMixin):
                           padding_mode='zeros'),
                 nn.ReLU(),
                 nn.MaxPool1d(kernel_size=2),
-                nn.Flatten()#,
-                #nn.BatchNorm1d(2200)
+                nn.Flatten()
             )
         
         self.do2 = nn.Dropout(self.drop_conv)
-        #self.act2 = nn.ReLU()
-        #self.bn1 = nn.BatchNorm1d(6800)
         self.final = nn.Linear(6800, self.num_classes)
-        #self.act3 = nn.ReLU()
-        #self.act3 = nn.Sigmoid()
 
     def regularizer(self):
         # Weight and bias regularizer
@@ -580,45 +482,27 @@ class LSTM_CNN3(nn.Module, MCSingleMixin):
         return weight_sum + bias_sum + dropout_reg
 
     def forward(self, inputs, labels=None):
-        #out = inputs #.unsqueeze(1)
         out = inputs.permute((1,0,2)) # 0,1,2 -> 1,0,2
-        #print("inputs.shape = ", inputs.shape)
         out, h = self.lstm1(out)
         out = self.do0(out)
         out = out.permute((1,0,2))
         
         pooling_reps = []
-        #for cnn in model.cnns.children():
-        #    pool_vecs = cnn(out.permute((0,2,1))) #.unsqueeze(dim=1))
-        #    #print(f"out pool_vecs = ", pool_vecs.shape)
-        #    pooling_reps.append(pool_vecs)
         
         pool_vecs = self.cnn1(out.permute((0,2,1)))
-        #print(f"out pool_vecs = ", pool_vecs.shape)
         pooling_reps.append(pool_vecs)
         
         pool_vecs = self.cnn2(out.permute((0,2,1)))
-        #print(f"out pool_vecs = ", pool_vecs.shape)
         pooling_reps.append(pool_vecs)
         
         pool_vecs = self.cnn3(out.permute((0,2,1)))
-        #print(f"out pool_vecs = ", pool_vecs.shape)
         pooling_reps.append(pool_vecs)
-            
-        #print("out pooling_reps = ", pooling_reps)
             
         # concatenate all vectors
         representation = torch.cat(pooling_reps, dim=1).contiguous()
         out = self.do2(representation)
-        #out = self.act2(out) ###
-        #out = self.bn1(out) ###
-        #out = self.act2(out)
-        #print("out do2.shape = ", out.shape)
         out = self.final(out)
-        #out = self.final(representation)
-        #print("out final.shape = ", out.shape)
-        #out = self.act3(out)
-        #print("out final.shape = ", out.shape)
+
         return out
 
 
@@ -713,11 +597,8 @@ class LSTM_CNN4(nn.Module):
         self.hidden_dim = hidden_dim
         self.layers = lstm_layers
         self.bidirectional = True
-        #self.dense = dense
 
         # some more parameters
-        #self.output_dim = dim
-        #self.batch_norm = batch_norm
         self.dropout = dropout
         self.rec_dropout = dropout_w
         self.depth = lstm_layers
@@ -738,7 +619,6 @@ class LSTM_CNN4(nn.Module):
             self.do0 = nn.Dropout(self.dropout)
             
         # this is not in the original model
-        #self.act1 = nn.ReLU()
         if self.layers >=2:
             self.lstm2 = LSTMNew(input_size=self.hidden_dim*2,
                                 hidden_size=self.hidden_dim*2,
@@ -755,139 +635,65 @@ class LSTM_CNN4(nn.Module):
                                 dropout=self.rec_dropout,
                                 bidirectional=False,
                                 batch_first=True)
-
-        #self.do1 = nn.Dropout(self.dropout)
-        #self.bn0 = nn.BatchNorm1d(48 * self.hidden_dim*2)
         
         # three Convolutional Neural Networks with different kernel sizes
         nfilters=[2, 3, 4]
         nb_filters=100
         pooling_reps = []
-        
-        #self.cnns = nn.Module()
-        #for idx, k in enumerate(nfilters):
-        #    self.cnns.add_module(f"cnn{idx}", nn.Sequential(
-        #        # torch.nn.Conv1d(in_channels: int, out_channels: int, kernel_size: Union[T, Tuple[T]],
-        #        # stride: Union[T, Tuple[T]] = 1, padding: Union[T, Tuple[T]] = 0,
-        #        # dilation: Union[T, Tuple[T]] = 1, groups: int = 1, bias: bool = True,
-        #        # padding_mode: str = 'zeros')
-        #        nn.Conv1d(in_channels=16, out_channels=nb_filters, kernel_size=k,
-        #                  stride=1, padding=0, dilation=1, groups=1, bias=True,
-        #                  padding_mode='zeros'),
-        #        nn.ReLU(),
-        #        # torch.nn.MaxPool1d(kernel_size: Union[T, Tuple[T, ...]],
-        #        # stride: Optional[Union[T, Tuple[T, ...]]] = None, padding: Union[T, Tuple[T, ...]] = 0,
-        #        # dilation: Union[T, Tuple[T, ...]] = 1, return_indices: bool = False, ceil_mode: bool = False)
-        #        nn.MaxPool1d(kernel_size=2),
-        #        nn.Flatten()
-        #    ))
-            
+
         self.cnn1 = nn.Sequential(
-                # torch.nn.Conv1d(in_channels: int, out_channels: int, kernel_size: Union[T, Tuple[T]],
-                # stride: Union[T, Tuple[T]] = 1, padding: Union[T, Tuple[T]] = 0,
-                # dilation: Union[T, Tuple[T]] = 1, groups: int = 1, bias: bool = True,
-                # padding_mode: str = 'zeros')
                 nn.Conv1d(in_channels=self.hidden_dim*2, out_channels=nb_filters, kernel_size=2,
                           stride=1, padding=0, dilation=1, groups=1, bias=True,
                           padding_mode='zeros'),
                 nn.ReLU(),
-                # torch.nn.MaxPool1d(kernel_size: Union[T, Tuple[T, ...]],
-                # stride: Optional[Union[T, Tuple[T, ...]]] = None, padding: Union[T, Tuple[T, ...]] = 0,
-                # dilation: Union[T, Tuple[T, ...]] = 1, return_indices: bool = False, ceil_mode: bool = False)
                 nn.MaxPool1d(kernel_size=2),
-                nn.Flatten()#,
-                #nn.BatchNorm1d(2300)
+                nn.Flatten()
             )
         
         self.cnn2 = nn.Sequential(
-                # torch.nn.Conv1d(in_channels: int, out_channels: int, kernel_size: Union[T, Tuple[T]],
-                # stride: Union[T, Tuple[T]] = 1, padding: Union[T, Tuple[T]] = 0,
-                # dilation: Union[T, Tuple[T]] = 1, groups: int = 1, bias: bool = True,
-                # padding_mode: str = 'zeros')
                 nn.Conv1d(in_channels=self.hidden_dim*2, out_channels=nb_filters, kernel_size=3,
                           stride=1, padding=0, dilation=1, groups=1, bias=True,
                           padding_mode='zeros'),
                 nn.ReLU(),
-                # torch.nn.MaxPool1d(kernel_size: Union[T, Tuple[T, ...]],
-                # stride: Optional[Union[T, Tuple[T, ...]]] = None, padding: Union[T, Tuple[T, ...]] = 0,
-                # dilation: Union[T, Tuple[T, ...]] = 1, return_indices: bool = False, ceil_mode: bool = False)
                 nn.MaxPool1d(kernel_size=2),
-                nn.Flatten()#,
-                #nn.BatchNorm1d(2300)
+                nn.Flatten()
             )
         
         self.cnn3 = nn.Sequential(
-                # torch.nn.Conv1d(in_channels: int, out_channels: int, kernel_size: Union[T, Tuple[T]],
-                # stride: Union[T, Tuple[T]] = 1, padding: Union[T, Tuple[T]] = 0,
-                # dilation: Union[T, Tuple[T]] = 1, groups: int = 1, bias: bool = True,
-                # padding_mode: str = 'zeros')
                 nn.Conv1d(in_channels=self.hidden_dim*2, out_channels=nb_filters, kernel_size=4,
                           stride=1, padding=0, dilation=1, groups=1, bias=True,
                           padding_mode='zeros'),
                 nn.ReLU(),
-                # torch.nn.MaxPool1d(kernel_size: Union[T, Tuple[T, ...]],
-                # stride: Optional[Union[T, Tuple[T, ...]]] = None, padding: Union[T, Tuple[T, ...]] = 0,
-                # dilation: Union[T, Tuple[T, ...]] = 1, return_indices: bool = False, ceil_mode: bool = False)
                 nn.MaxPool1d(kernel_size=2),
-                nn.Flatten()#,
-                #nn.BatchNorm1d(2200)
+                nn.Flatten()
             )
         
         self.do2 = nn.Dropout(self.drop_conv)
-        #self.act2 = nn.ReLU()
-        #self.bn1 = nn.BatchNorm1d(6800)
         self.final = nn.Linear(6800, self.num_classes)
-        #self.act3 = nn.ReLU()
-        #self.act3 = nn.Sigmoid()
-
 
     def forward(self, inputs, labels=None):
-        out = inputs #.unsqueeze(1)
-        #print("inputs.shape = ", inputs.shape)
+        out = inputs
         if self.layers >=2:
             out, h = self.lstm1(out)
             out = self.do0(out)
         out, h = self.lstm2(out)
-        #print("out lstm.shape = ", out.shape)
-        ###out = self.act1(out) #[:,-1])
-        #print("out relu.shape = ", out.shape)
-        #out = self.do1(out)
-        
-        #print("out do1.shape = ", out.shape)
-        #out = self.bn0(out)
         
         pooling_reps = []
-        #for cnn in model.cnns.children():
-        #    pool_vecs = cnn(out.permute((0,2,1))) #.unsqueeze(dim=1))
-        #    #print(f"out pool_vecs = ", pool_vecs.shape)
-        #    pooling_reps.append(pool_vecs)
         
         pool_vecs = self.cnn1(out.permute((0,2,1)))
-        #print(f"out pool_vecs = ", pool_vecs.shape)
         pooling_reps.append(pool_vecs)
         
         pool_vecs = self.cnn2(out.permute((0,2,1)))
-        #print(f"out pool_vecs = ", pool_vecs.shape)
         pooling_reps.append(pool_vecs)
         
         pool_vecs = self.cnn3(out.permute((0,2,1)))
-        #print(f"out pool_vecs = ", pool_vecs.shape)
         pooling_reps.append(pool_vecs)
-            
-        #print("out pooling_reps = ", pooling_reps)
             
         # concatenate all vectors
         representation = torch.cat(pooling_reps, dim=1).contiguous()
         out = self.do2(representation)
-        #out = self.act2(out) ###
-        #out = self.bn1(out) ###
-        #out = self.act2(out)
-        #print("out do2.shape = ", out.shape)
         out = self.final(out)
-        #out = self.final(representation)
-        #print("out final.shape = ", out.shape)
-        #out = self.act3(out)
-        #print("out final.shape = ", out.shape)
+
         return out
     
 # training loop of the LSTM model
@@ -937,13 +743,10 @@ def train(dataloader, model, optimizer, criterion, device):
         final_targets.extend(targ)
         
         # compute gradienta of loss w.r.t. to trainable parameters of the model
-        #loss_.backward()
         loss.backward()
         
         # single optimizer step
         optimizer.step()
-        #if scheduler:
-        #    scheduler.step()
         
     return total_loss, final_predictions, final_targets
         
@@ -965,10 +768,8 @@ def evaluate(dataloader, model, device):
     
     # disable gradient calculation
     with torch.no_grad():
-        #for inputs, targets in tqdm(dataloader, desc="Eval epoch"):
         for inputs, targets in dataloader:
             # set inputs and targets
-            #inputs = inputs.unsqueeze(1)
             inputs = inputs.to(device, dtype=torch.float32)
             targets = targets.to(device, dtype=torch.float32)
             
@@ -1026,30 +827,20 @@ def trainer(dataloader_train, dataloader_val, modelclass=LSTM_CNN4, number_epoch
         error, outputs, targets = train(dataloader_train, model, optimizer, loss, device)
         train_loss_values.append(error)
 
-        #y_pred = torch.sigmoid(torch.tensor(outputs))
         o = torch.tensor(outputs)
 
-        #predicted_vals = y_pred > logit_threshold
-        #o = np.where(outputs.clone().detach().numpy() > 0.5, 1., 0.)
         o = o > logit_threshold
         accuracy = metrics.accuracy_score(targets, o)
-        #print(metrics.classification_report(targets, o))
         l = np.asarray(error)
         if verbatim:
             print(f"Epoch Train: {epoch}, Accuracy Score = {accuracy:.4f}, Loss = {l.mean():.4f}")
-        #m.print_metrics_binary(targets,o.reshape(-1,))
 
         # validation of the model
         outputs, targets = evaluate(dataloader_val, model, device)
-
-        #y_pred = torch.sigmoid(torch.tensor(outputs))
         outputs = torch.tensor(outputs)
 
-        #predicted_vals = y_pred > logit_threshold
         o = outputs > logit_threshold
         accuracy = metrics.accuracy_score(targets, o)
-        #print(metrics.classification_report(targets, o))
-        #l = np.asarray(error)
         l = nn.BCEWithLogitsLoss()(outputs, torch.tensor(targets).detach().view(-1,1))
         val_loss_values.append(l)
 
@@ -1058,8 +849,7 @@ def trainer(dataloader_train, dataloader_val, modelclass=LSTM_CNN4, number_epoch
         if verbatim:
             print(f"Epoch Val: {epoch}, Accuracy Score = {accuracy:.4f} ({best_accuracy:.4f}), ROCAUC = {roc_auc:.4f} ({best_roc_auc:.4f}), Loss = {l.mean():.4f} ({best_loss:.4f})")
             print("-"*20)
-        #m.print_metrics_binary(targets, o.reshape(-1,))
-        
+
         scheduler.step(roc_auc)
 
         if l < best_loss:
@@ -1112,8 +902,6 @@ def calcMetrics(model, dataloader_test, filename, title):
 
     # validation of the model
     outputs, targets = evaluate(dataloader_test, model, device)
-
-    #y_pred = torch.sigmoid(torch.tensor(outputs))
     outputs = torch.tensor(outputs)
 
     o = outputs > logit_threshold
